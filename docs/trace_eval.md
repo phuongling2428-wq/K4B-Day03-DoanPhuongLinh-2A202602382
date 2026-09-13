@@ -1,20 +1,22 @@
 # 📊 BÁO CÁO THU HOẠCH NGHIỆM THU BÀI LAB 3 (BƯỚC 3 — SUBMISSION ARTIFACT)
 
-> **Họ và Tên Học viên:** [Điền Họ và Tên]  
-> **Mã Sinh Viên / Mã Học viên:** [Điền MSSV]  
-> **Chủ đề Lựa chọn:** [Điền tên chủ đề đã chọn từ docs/DANH_SACH_DE_TAI.md hoặc Đề tài Mở]  
+> **Họ và Tên Học viên:** [Đoàn Phương Linh]  
+> **Mã Sinh Viên / Mã Học viên:** [2A202602382]  
+> **Chủ đề Lựa chọn:** [Trợ lý Học vụ VinUni: Tra cứu thông tin sinh viên và đặt lịch tư vấn với cố vấn học tập]  
 
 ---
 
-## 1. BẢNG CHẤM ĐIỂM AGENTIC FIT SCORING MATRIX (ĐÁNH GIÁ CHỦ ĐỀ)
+> **Chủ đề Lựa chọn:** [Trợ lý Học vụ VinUni: Tra cứu thông tin sinh viên và đặt lịch tư vấn với cố vấn học tập]
 
+---
+## 1. BẢNG CHẤM ĐIỂM AGENTIC FIT SCORING MATRIX (ĐÁNH GIÁ CHỦ ĐỀ)
 | Tiêu chí Đánh giá | Mức độ (1 - 5) | Giải trình chi tiết lý do chọn điểm |
 | :--- | :---: | :--- |
-| **1. Multi-step Reasoning** | / 5 | Bài toán có yêu cầu chia nhỏ nhiều bước suy luận nối tiếp nhau không? |
-| **2. Tool Interaction** | / 5 | Hệ thống có cần kết nối với MCP Server / Cơ sở dữ liệu bên ngoài không? |
-| **3. Dynamic Decision** | / 5 | Bước tiếp theo có phụ thuộc vào kết quả quan sát bước trước không? |
-| **4. Long Horizon Goal** | / 5 | Hệ thống có phải giữ mục tiêu xuyên suốt qua nhiều lượt xử lý không? |
-| **TỔNG ĐIỂM AGENTIC FIT** | **/ 20** | *Nếu tổng điểm > 12/20: Bài toán rất phù hợp triển khai Agentic System.* |
+| **1. Multi-step Reasoning** | 4 / 5 | Bài toán yêu cầu chia nhỏ nhiều bước suy luận tiếp nhau từ kiểm tra thông tin sinh viên, đối chiếu điều kiện cho đến tìm lịch trống của cố vấn. |
+| **2. Tool Interaction** | 5 / 5 | Hệ thống bắt buộc phải kết nối với cơ sở dữ liệu sinh viên VinUni và API lịch làm việc (Google Calendar/Outlook) của cố vấn để tra cứu và đặt lịch. |
+| **3. Dynamic Decision** | 4 / 5 | Bước tiếp theo phụ thuộc vào kết quả quan sát trước đó. Nếu lịch cố vấn bị trùng hoặc sinh viên không đủ điều kiện, hệ thống phải tự động chuyển hướng xử lý khác. |
+| **4. Long Horizon Goal** | 4 / 5 | Hệ thống phải giữ mục tiêu xuyên suốt qua nhiều lượt xử lý, dẫn dắt sinh viên hoàn thành việc đặt lịch ngay cả khi cuộc hội thoại bị ngắt quãng hoặc kéo dài. |
+| **TỔNG ĐIỂM AGENTIC FIT** | **17 / 20** | *Nếu tổng điểm > 12/20: Bài toán rất phù hợp triển khai Agentic System.* |
 
 ---
 

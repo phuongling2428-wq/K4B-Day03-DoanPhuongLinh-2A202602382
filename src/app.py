@@ -186,48 +186,28 @@ if __name__ == "__main__":
         while True:
             try:
                 user_input = input("👤 Sinh viên hỏi: ").strip()
-                if not user_input or user_input.lower() in ["exit", "quit"]:
-                    print("👋 Tạm biệt! Kết thúc phiên trò chuyện.")
+                if not user_input:
+                    continue
+                if user_input.lower() in ["exit", "quit"]:
+                    print("👋 Tạm biệt!")
                     break
-                logs = run_react_agent(user_input, provider, mcp_server)
-                save_waterfall_trace(logs)
+                run_react_agent(user_input, provider, mcp_server)
             except (KeyboardInterrupt, EOFError):
-                print("\n👋 Đã thoát phiên tương tác.")
                 break
-    elif "--all" in sys.argv:
-        print("🚀 [TEST SUITE MODE] Kiểm tra 5 Test Cases:")
-        completed_count = 0
-        todo_count = 0
-        all_traces = []
-        
-        for tc in tests:
-            print(f"\n==================================================")
-            print(f"🧪 [{tc['id']}] Loại test: {tc['type']} (Độ phức tạp: {tc['complexity']})")
-            print(f"📌 Kỳ vọng: {tc['expected_behavior']}")
-            
-            if tc["question"].strip().startswith("TODO"):
-                print(f"⏸️ [CHƯA KÍCH HOẠT - ĐANG LÀ TODO]:")
-                print(f"   {tc['question']}")
-                print(f"   👉 Hãy mở file 'config/test_cases.json' để viết câu hỏi thực tế cho Test Case này!")
-                todo_count += 1
-            else:
-                logs = run_react_agent(tc["question"], provider, mcp_server)
-                all_traces.extend(logs)
-                completed_count += 1
-                
-        print(f"\n==================================================")
-        print(f"📊 [KẾT QUẢ TEST SUITE]: Đã thực thi {completed_count}/{len(tests)} Test Cases | {todo_count} Test Cases đang chờ điền câu hỏi (TODO)")
-        if all_traces:
-            save_waterfall_trace(all_traces)
-        print(f"💡 Để trò chuyện trực tiếp từng câu: Chạy 'python src/app.py --interactive'")
     else:
-        # Chế độ mặc định khi chỉ gõ 'python src/app.py'
-        print("ℹ️ HƯỚNG DẪN SỬ DỤNG CHƯƠNG TRÌNH:")
-        print("  1. Chat trực tiếp liên tục:   python src/app.py --interactive")
-        print("  2. Chạy toàn bộ Test Cases:    python src/app.py --all\n")
-        
-        sample_query = tests[1]["question"]
-        print(f"--- 🏁 DEMO CHẠY THỬ 1 TEST CASE MẪU (TC02: Tra cứu học vụ) ---")
-        logs = run_react_agent(sample_query, provider, mcp_server)
-        save_waterfall_trace(logs)
-        print("\n💡 Hãy thử ngay lệnh: python src/app.py --interactive để chat trực tiếp!")
+        # Chạy kiểm thử tự động với danh sách test cases
+        all_traces = []
+        for i, tc in enumerate(tests):
+            print(f"\n🚀 [TEST CASE {i+1}/{len(tests)}] ID: {tc['id']} | Type: {tc['type']}")
+            
+            # 1. Chuyển cho Chatbot Baseline chạy trước
+            run_baseline_chatbot(tc["question"], provider)
+            
+            print("-" * 40)
+            
+            # 2. Chuyển cho ReAct Agent thông minh kết nối MCP Server chạy sau
+            traces = run_react_agent(tc["question"], provider, mcp_server)
+            all_traces.extend(traces)
+            print("=" * 60)
+            
+        save_waterfall_trace(all_traces)

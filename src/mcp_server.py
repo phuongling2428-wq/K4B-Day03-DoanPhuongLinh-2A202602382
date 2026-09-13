@@ -31,36 +31,57 @@ class MCPAcademicServer:
         [TASK 2.1] HỌC VIÊN HOÀN THIỆN HÀM THỰC THI TOOL TRÊN MCP SERVER
         Thực thi request gọi Tool theo chuẩn MCP JSON-RPC
         """
-        # --------------------------------------------------------------------------
-        # TODO 2.1: HỌC VIÊN HOÀN THIỆN HÀM GỌI TOOL CHUẨN MCP JSON-RPC
-        # 🎯 YÊU CẦU THỰC THI THUẬT TOÁN:
-        # 1. Gọi hàm dispatch_tool_call(tool_name, arguments) để lấy chuỗi JSON kết quả từ Tool Router.
-        # 2. Chuyển đổi chuỗi JSON kết quả thành Python Dictionary (dùng json.loads).
-        # 3. Đóng gói phản hồi và trả về Dict theo đúng chuẩn giao thức MCP JSON-RPC 2.0:
-        #    - Các trường bắt buộc: "jsonrpc": "2.0", "server": self.server_name, "tool": tool_name, "result": content
-        # --------------------------------------------------------------------------
-        return {}
+        # 1. Gọi hàm dispatch_tool_call để lấy chuỗi JSON kết quả từ Tool Router
+        raw_result = dispatch_tool_call(tool_name, arguments)
+        
+        # 2. Chuyển đổi chuỗi JSON kết quả thành Python Dictionary
+        content = json.loads(raw_result)
+        
+        # 3. Đóng gói phản hồi và trả về Dict theo đúng chuẩn giao thức MCP JSON-RPC 2.0
+        return {
+            "jsonrpc": "2.0",
+            "server": self.server_name,
+            "tool": tool_name,
+            "result": content
+        }
 
 
 if __name__ == "__main__":
-    print("==========================================================")
-    print("🔌 KIỂM THỬ ĐỘC LẬP MCP SERVER (vinuni-academic-mcp-server)")
-    print("==========================================================")
-    
     server = MCPAcademicServer()
     tools = server.list_tools()
-    print(f"✅ Khởi tạo thành công MCP Server: {server.server_name} (Version: {server.version})")
-    print(f"📦 Số lượng Tools công bố: {len(tools)}")
     
+    # 1. Kiểm tra số lượng tools đã đăng ký thành công
+    if len(tools) >= 2:
+        print(f"✅ [TOOLS CHECK]: Đã đăng ký thành công {len(tools)} Native Tools trong TOOLS_SCHEMA!")
+    else:
+        print(f"⏳ [TOOLS CHECK]: Chưa đăng ký đủ số lượng Native Tools.")
+
+    # 2. Gọi thử nghiệm tool academic_query để lấy kết quả in ra màn hình
+    try:
+        test_result = server.call_tool("academic_query", {"student_id": "SV2026001"})
+        status = test_result.get("result", {}).get("status", "FAILED")
+        student_name = test_result.get("result", {}).get("data", {}).get("full_name", "Không rõ")
+        
+        # In ra dòng kết quả khớp hoàn toàn với mẫu thiết kế giao diện của bạn
+        print(f"🧪 Kết quả gọi thử academic_query: Status {status} (Sinh viên {student_name})")
+    except Exception as e:
+        print(f"❌ Lỗi khi thực hiện kiểm thử gọi tool: {e}")
+
     # Kiểm tra trạng thái TODO 1.2 (Tool Schema)
     sched_tool = next((t for t in tools if t.get("name") == "schedule_appointment"), None)
-    if sched_tool and not sched_tool.get("parameters", {}).get("properties"):
+    
+    has_properties = False
+    if sched_tool:
+        schema_body = sched_tool.get("inputSchema") or sched_tool.get("parameters")
+        if schema_body and schema_body.get("properties"):
+            has_properties = True
+
+    if not has_properties:
         print("⏳ [TODO 1.2]: Tool 'schedule_appointment' chưa được định nghĩa properties trong 'src/tools.py'.")
     else:
         print("✅ [TODO 1.2]: Tool 'schedule_appointment' đã có schema đầy đủ.")
 
     # Kiểm tra trạng thái TODO 2.1 (call_tool)
-    test_result = server.call_tool("academic_query", {"student_id": "SV2026001"})
     if not test_result:
         print("⏳ [TODO 2.1]: Hàm call_tool() đang trả về rỗng. Học viên hãy hoàn thiện TODO 2.1 trong 'src/mcp_server.py'!")
     else:
